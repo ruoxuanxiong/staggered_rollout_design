@@ -5,7 +5,7 @@ import time
 from utils_empirical import *
 
 def run_static(all_taus, seed=1234, print_epochs=100, all_Ys=None, pre_Ys=None, num_mc=100, N=100, T=50, pre_T=50, adj_pct=0.01, adjust_covar=False, J=2, G=2,
-                     adjust_covar_only=False, method="OLS", return_std=False, lag=None, est_lag=None, no_bm=False, unit_effect=True, time_effect=True, all_names=None):
+                     adjust_covar_only=False, method="OLS", return_std=False, lag=None, est_lag=None, no_bm=False, unit_effect=True, time_effect=True, all_names=None, pad_obs=False):
     np.random.seed(seed)
 
     if all_Ys is not None:
@@ -77,6 +77,11 @@ def run_static(all_taus, seed=1234, print_epochs=100, all_Ys=None, pre_Ys=None, 
             for name in all_names:
                 Z = all_Zs[name]
                 Y = add_treatment_effect(this_ctrl_Y, Z, all_taus)
+
+                if pad_obs and (est_lag > 0):
+                    Y = np.concatenate((np.zeros((Y.shape[0],est_lag)), Y), axis=1)
+                    Z = np.concatenate((-np.ones((Z.shape[0],est_lag)), Z), axis=1)
+
                 if method == "GLS":
                     if return_std:
                         tau_hat, tau_var_hat = est_static_gls(Y, Z, est_lag, return_std=True)
@@ -100,6 +105,11 @@ def run_static(all_taus, seed=1234, print_epochs=100, all_Ys=None, pre_Ys=None, 
             this_pre_Y = pre_Ys[j]
             Z = find_opt_z_cluster(this_pre_Y, T, lag, J=J, G=G)
             Y = add_treatment_effect(this_ctrl_Y, Z, all_taus)
+
+            if pad_obs and (est_lag > 0):
+                Y = np.concatenate((np.zeros((Y.shape[0], est_lag)), Y), axis=1)
+                Z = np.concatenate((-np.ones((Z.shape[0], est_lag)), Z), axis=1)
+
             if method == "GLS":
                 if return_std:
                     tau_hat, tau_var_hat = est_static_gls(Y, Z, est_lag, return_std=True)
@@ -128,7 +138,7 @@ def run_static(all_taus, seed=1234, print_epochs=100, all_Ys=None, pre_Ys=None, 
 
 
 
-def compare_static_designs(Y, all_taus, all_Ns, all_Ts, pre_T, num_mc=1000, num_iter=1, print_epochs = 100, adj_pct=0.02, method="GLS", J=1, G=4, seed=123, est_lag=None, all_names=None):
+def compare_static_designs(Y, all_taus, all_Ns, all_Ts, pre_T, num_mc=1000, num_iter=1, print_epochs = 100, adj_pct=0.02, method="GLS", J=1, G=4, seed=123, est_lag=None, all_names=None, pad_obs=False):
     timestamp = time.time()
     result = dict();
     result_all = dict()
@@ -165,7 +175,7 @@ def compare_static_designs(Y, all_taus, all_Ns, all_Ts, pre_T, num_mc=1000, num_
                                                                                         print_epochs=print_epochs,
                                                                                         adjust_covar=False, return_std=True,
                                                                                         method=method, adj_pct=adj_pct,
-                                                                                        est_lag=est_lag, all_names=all_names)
+                                                                                        est_lag=est_lag, all_names=all_names, pad_obs=pad_obs)
 
                 this_dict, this_total_dict, this_var_dict, this_total_var_dict = run_static(all_taus, all_Ys=all_Ys,
                                                                                             pre_Ys=pre_Ys,
@@ -175,7 +185,7 @@ def compare_static_designs(Y, all_taus, all_Ns, all_Ts, pre_T, num_mc=1000, num_
                                                                                             adjust_covar_only=True,
                                                                                             return_std=True,
                                                                                             method=method,
-                                                                                            adj_pct=adj_pct, est_lag=est_lag)
+                                                                                            adj_pct=adj_pct, est_lag=est_lag, pad_obs=pad_obs)
                 out_dict['opt+_' + str(J) + "_" + str(G)] = this_dict['opt+_' + str(J) + "_" + str(G)]
                 out_total_dict['opt+_' + str(J) + "_" + str(G)] = this_total_dict['opt+_' + str(J) + "_" + str(G)]
                 out_var_dict['opt+_' + str(J) + "_" + str(G)] = this_var_dict['opt+_' + str(J) + "_" + str(G)]
