@@ -68,22 +68,6 @@ def calc_scaled_Phi_list(bm_treat_avg, T_max, N):
     return scaled_Phi_list
 
 
-def get_Pt(sigma_sq, xi_dagger_sq, const_list, kappa, num_mc=100):
-    xi_dagger_sq_sqrt = xi_dagger_sq ** 0.5
-    Pt = np.zeros((len(const_list), ))
-    for j in range(num_mc):
-        this_sigma_sq = np.random.normal(loc=sigma_sq, scale=xi_dagger_sq_sqrt)
-        all_vals = this_sigma_sq / np.array(const_list)
-        min_T = np.sum(all_vals > kappa)
-        if min_T == len(const_list):
-            min_T = len(const_list) - 1
-        Pt[min_T] = Pt[min_T] + 1
-
-    Pt = Pt/np.sum(Pt)
-
-    return Pt
-
-
 def get_Pt(sigma_sq, scaled_xi_dagger_sq, N, t, scaled_Phi_list, prec_thres, num_mc=100):
     xi_dagger_sq_sqrt = scaled_xi_dagger_sq ** 0.5
     Pt = np.zeros((len(scaled_Phi_list),))
@@ -172,7 +156,7 @@ def test_asymptotics(N, T_max, tau, T=None, seed=1234, num_mc=1000, sigma=1):
     return out
 
 
-def run_adaptive(tau, kappa=None, var_thres=0.01, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_mc=100,
+def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_mc=100,
                     N=100, T_max=50, t0=3, scale = 10e8, adaptive=False, adj_N=None, print_out=True, prec_thres=10, sigma=1):
     np.random.seed(seed)
     all_ws = [(t - 50) / 50 for t in range(0, 100)]
