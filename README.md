@@ -12,9 +12,9 @@ Code is available in code/
 
 - utils_adaptive.py: code for Precision-Guided Adaptive Experiments (PGAE) algorithm
 
-= utils_empirical.py: helper functions to run synthetic experiments on empirical data
+- utils_empirical.py: helper functions to run synthetic experiments on empirical data
 
-= utils_import_data.py: helper functions to import empirical data
+- utils_import_data.py: helper functions to import empirical data
 
 - utils_make_figures.py: helper functions to make figures
 
