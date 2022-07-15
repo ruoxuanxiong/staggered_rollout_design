@@ -1,6 +1,6 @@
 # Optimal experimental design for staggered rollouts
 
-Code is available in code/
+Code is available at code/
 
 - utils_estimate.py: code for within estimator, OLS, and GLS
 
@@ -18,7 +18,7 @@ Code is available in code/
 
 - utils_make_figures.py: helper functions to make figures
 
-Eamples to use the code are available in code/
+Eamples to use the code are available at code/
 
 - See Figure-2-4.ipynb for examples to solve T-optimal design and D-optimal design
 
@@ -35,4 +35,4 @@ Empirical data sets used in this paper are available at data/
 
 - Data have been preprocessed into a matrix form
 
-Figures are available in result/
+Figures are available at result/
