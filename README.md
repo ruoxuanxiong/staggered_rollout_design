@@ -1,6 +1,31 @@
 # Optimal experimental design for staggered rollouts
 
-### Code is available at code/
+### Eamples to use the code are available at [`code`](code)
+
+#### Fixed-sample-size experiments 
+
+- [`Example`](code/Figure-2-4.ipynb) to solve T-optimal design and D-optimal design
+
+- [`Example`](code/compare-various-estimation-methods-designs.ipynb) to run synthetic fixed-sample-size experiments on empirical data
+
+- [`Example`](Figure-10-11.ipynb) to make Figures 10 and 11
+
+#### Sequential experiments
+
+- [`Example`](code/adaptive_asymptotics-lemma-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1
+
+- [`Example`](code/adaptive_asymptotics-theorem-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1
+
+- [`Example`](code/adaptive-flu.ipynb) to run synthetic sequential experiments on empirical data
+
+
+### Empirical data sets used in this paper are available at [`data`](data)
+
+- Data have been preprocessed into a matrix form
+
+### Figures are available at [`result`](result)
+
+### Helper functions are available at [`code`](code)
 
 - utils_estimate.py: code for within estimator, OLS, and GLS
 
@@ -18,27 +43,13 @@
 
 - utils_make_figures.py: helper functions to make figures
 
-### Eamples to use the code are available at code/
+### Reference
 
-#### Fixed-sample-size experiments 
-
-- Figure-2-4.ipynb: solve T-optimal design and D-optimal design
-
-- compare-various-estimation-methods-designs.ipynb: run synthetic fixed-sample-size experiments on empirical data
-
-- Figure-10-11.ipynb: make Figures 10 and 11
-
-#### Sequential experiments
-
-- adaptive_asymptotics-lemma-4.1.ipynb: verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1
-
-- adaptive_asymptotics-theorem-4.1.ipynb: verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1
-
-- adaptive-flu.ipynb: run synthetic sequential experiments on empirical data
-
-
-### Empirical data sets used in this paper are available at data/
-
-- Data have been preprocessed into a matrix form
-
-### Figures are available at result/
+```
+@article{xiong2019optimal,
+  title={Optimal experimental design for staggered rollouts},
+  author={Xiong, Ruoxuan and Athey, Susan and Bayati, Mohsen and Imbens, Guido},
+  journal={arXiv preprint arXiv:1911.03764},
+  year={2019}
+}
+```
