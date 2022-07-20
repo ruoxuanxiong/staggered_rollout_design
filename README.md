@@ -1,5 +1,7 @@
 # Optimal experimental design for staggered rollouts
 
+This repository contains the code to reproduce the results presented in "optimal experimental design for staggered rollouts".
+
 ### Eamples to use the code are available at [`code`](code)
 
 #### Fixed-sample-size experiments 
@@ -25,23 +27,23 @@
 
 ### Figures are available at [`result`](result)
 
-### Helper functions are available at [`code`](code)
+### Code is available at [`code`](code) 
 
-- utils_estimate.py: code for within estimator, OLS, and GLS
+- ```utils_estimate.py```: within estimator, OLS, and GLS
 
-- utils_carryover.py: code to solve the optimal designs with carryover effects
+- ```utils_carryover.py```: solve the optimal designs with carryover effects
 
-- utils_design.py: code to generate treatment designs and experimental data
+- ```utils_design.py```: generate treatment designs and experimental data
 
-- test_static.py: code to run fixed-sample-size experiments and compare different treatment designs
+- ```test_static.py```: run fixed-sample-size experiments and compare different treatment designs
 
-- utils_adaptive.py: code for Precision-Guided Adaptive Experiments (PGAE) algorithm
+- ```utils_adaptive.py```: Precision-Guided Adaptive Experiments (PGAE) algorithm
 
-- utils_empirical.py: helper functions to run synthetic experiments on empirical data
+- ```utils_empirical.py```: run synthetic experiments on empirical data
 
-- utils_import_data.py: helper functions to import empirical data
+- ```utils_import_data.py```: import empirical data
 
-- utils_make_figures.py: helper functions to make figures
+- ```utils_make_figures.py```: make figures
 
 ### Reference
 
