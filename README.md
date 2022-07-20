@@ -18,7 +18,7 @@ This repository contains the code to reproduce the results presented in "optimal
 
 - [`Example`](code/adaptive_asymptotics-theorem-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1
 
-- [`Example`](code/adaptive-flu.ipynb) to run synthetic sequential experiments on empirical data
+- [`Example`](code/adaptive-flu.ipynb) to run synthetic sequential experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data
 
 
 ### Empirical data sets used in this paper are available at [`data`](data)
