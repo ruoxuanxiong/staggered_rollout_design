@@ -105,7 +105,6 @@ def solve_static_opt_design(T, fix_y=[]):
 
     y0 = [((2 * t + 1) / T - 1) for t in range(T)]
     bnds = tuple(fix_y_bnds + [(-1, 1) for t in range(fix_y_len, T)])
-    # print(T, fix_y_len, len(bnds))
     cons = tuple([{'type': 'ineq', 'fun': lambda y: y[t] - y[t - 1]} for t in range(1, T)])
     res = scipy.optimize.minimize(carryover_fun, y0, constraints=cons, bounds=bnds)
     return res
@@ -188,7 +187,6 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
            'sigma_err_2_std': [], 'T_ast': []}
 
     for j in range(num_mc):
-        # print(j)
         if (j + 1) % print_epochs == 0:
             print("{}/{} done".format(j + 1, num_mc))
 
@@ -205,23 +203,15 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
             ad_Y_2 = ad_ctrl_Y_2 + (1 + ad_Z_2) * tau
             tau_hat, tau_hat_var, eps_hat = est_within(ad_Y_1[:,:t], ad_Z_1[:,:t])
 
-            # experiment stopping
-            # if tau_hat_var < var_thres:
-            #     break
-
             Phi = calc_Phi(ad_Z_1[:,:t])
             sigma_sq_hat = calc_sigma_sq(eps_hat)
             prec_ad_1 = Phi * N * t / sigma_sq_hat
-            # print(t, Phi, sigma_sq_hat, prec_ad_1)
             if prec_ad_1 > prec_thres:
                 break
 
 
             if adaptive & (t < T_max - 1):
                 tau_hat, tau_hat_var, eps_hat = est_within(fs_Y[:,:t],fs_Z[:,:t])
-                # sigma_sq = np.mean(eps_hat**2)
-                # xi_dagger_sq = np.mean((eps_hat**2 - sigma_sq)**2)
-                # Pt = get_Pt(sigma_sq, xi_dagger_sq, const_list, kappa)
 
                 sigma_sq_hat = calc_sigma_sq(eps_hat)
                 xi_dagger_sq_hat = calc_sigma_sq_hat_var(eps_hat)
@@ -234,11 +224,9 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
                 for w in all_ws:
 
                     if w >= ad_w_t[-1]:
-                        # print(t, ad_w_t, w)
                         this_val = 0
                         for T in range(t+1, T_max):
                             if Pt[T-1] > 0:
-                                # print(T)
                                 res = solve_static_opt_design(T, fix_y=ad_w_t+[w])
                                 val = round(scale * 1 / (-res.fun) * T) / scale
                                 this_val = this_val + val * Pt[T-1]
@@ -261,7 +249,6 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
 
 
         _, _, eps_hat_2 = est_within(ad_Y_2[:,:T_ast], ad_Z_2[:,:T_ast])
-        # tau_hat_var_2 = tau_hat_var_all * np.mean(eps_hat_2 ** 2)/ np.mean(eps_hat_all ** 2)
         sigma_sq_hat_2 = calc_sigma_sq(eps_hat_2)
         xi_dagger_sq_hat_2 = calc_sigma_sq_hat_var(eps_hat_2)
         sigma_err_2_std = (sigma_sq_hat_2 - sigma ** 2) / np.sqrt(xi_dagger_sq_hat_2) * np.sqrt(half_ad_N * T_ast)
@@ -278,8 +265,6 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
         Z_opt = calc_cv_z_mtrx(N, T_ast, opt_treat_avg, cv=1)
         Y = this_ctrl_Y[:,:T_ast] + (1 + Z_opt) * tau
         tau_hat_opt, _, _ = est_within(Y, Z_opt)
-
-        # out.append([tau_hat - tau, tau_hat_bm - tau, tau_hat_opt - tau, T_ast, tau_hat_var_all, tau_hat_var_2])
 
         out['tau_adaptive'].append(tau_hat - tau)
         out['tau_bm'].append(tau_hat_bm - tau)
