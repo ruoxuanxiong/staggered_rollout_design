@@ -72,11 +72,15 @@ def get_Pt(sigma_sq, scaled_xi_dagger_sq, N, t, scaled_Phi_list, prec_thres, num
     xi_dagger_sq_sqrt = scaled_xi_dagger_sq ** 0.5
     Pt = np.zeros((len(scaled_Phi_list),))
     for j in range(num_mc):
-        this_sigma = np.random.normal(loc=sigma_sq, scale=xi_dagger_sq_sqrt)
-        this_sigma_sq = this_sigma ** 2
+        # this_sigma = np.random.normal(loc=sigma_sq, scale=xi_dagger_sq_sqrt)
+        # this_sigma_sq = this_sigma ** 2
+        this_sigma_sq = np.random.normal(loc=sigma_sq, scale=xi_dagger_sq_sqrt) # 0724 update
         this_prec_list = N * np.array(scaled_Phi_list) / this_sigma_sq
         # how many prec is less than the target
         min_T = np.sum(this_prec_list < prec_thres)
+
+        # if j < 5:
+        #     print("sim", j, this_prec_list, prec_thres, scaled_Phi_list, sigma_sq, this_sigma_sq)
 
         if min_T == len(scaled_Phi_list):
             min_T = len(scaled_Phi_list) - 1
@@ -108,6 +112,26 @@ def solve_static_opt_design(T, fix_y=[]):
     cons = tuple([{'type': 'ineq', 'fun': lambda y: y[t] - y[t - 1]} for t in range(1, T)])
     res = scipy.optimize.minimize(carryover_fun, y0, constraints=cons, bounds=bnds)
     return res
+
+
+def dp_next_w(ad_w_t, Pt, T_max, t, N0=50, scale=10e8):
+    all_ws = [(t - N0/2) / (N0/2) for t in range(0, N0+1)]
+    min_val = 100;
+    opt_w = ad_w_t[-1]
+    for w in all_ws:
+
+        if w >= ad_w_t[-1]:
+            this_val = 0
+            for T in range(t + 1, T_max):
+                if Pt[T - 1] > 0:
+                    res = solve_static_opt_design(T, fix_y=ad_w_t + [w])
+                    val = round(scale * 1 / (-res.fun) * T) / scale
+                    this_val = this_val + val * Pt[T - 1]
+            if this_val < min_val:
+                min_val = this_val
+                opt_w = w
+
+    return opt_w
 
 
 def test_asymptotics(N, T_max, tau, T=None, seed=1234, num_mc=1000, sigma=1):
@@ -156,7 +180,7 @@ def test_asymptotics(N, T_max, tau, T=None, seed=1234, num_mc=1000, sigma=1):
 
 
 def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_mc=100,
-                    N=100, T_max=50, t0=3, scale = 10e8, adaptive=False, adj_N=None, print_out=True, prec_thres=10, sigma=1):
+                    N=100, T_max=50, t0=3, scale = 10e8, adaptive=False, adj_N=None, print_out=True, prec_thres=10, sigma=1, dp_scale_N=1):
     np.random.seed(seed)
     all_ws = [(t - 50) / 50 for t in range(0, 100)]
     if adaptive == False:
@@ -174,7 +198,7 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
             all_Ys.append(this_Y)
 
     bm_treat_avg = [(2 * t + 1) / (2 * T_max) for t in range(T_max)]
-    ad_treat_avg = bm_treat_avg
+    ad_treat_avg = bm_treat_avg.copy()
     half_ad_N = int(N * (1-fs_pct)/2)
     ad_N = half_ad_N * 2
     fs_N = N - ad_N
@@ -183,8 +207,9 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
         adj_N = N
     scaled_Phi_list = calc_scaled_Phi_list(bm_treat_avg, T_max, adj_N)
 
-    out = {'tau_adaptive': [], 'tau_bm': [], 'tau_oracle': [], 'tau_err_std': [], 'sigma_err_1_std': [],
+    out = {'tau_adaptive': [], 'tau_bm': [], 'tau_oracle': [], 'tau_oracle_alt': [], 'tau_err_std': [], 'sigma_err_1_std': [],
            'sigma_err_2_std': [], 'T_ast': []}
+
 
     for j in range(num_mc):
         if (j + 1) % print_epochs == 0:
@@ -203,11 +228,14 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
             ad_Y_2 = ad_ctrl_Y_2 + (1 + ad_Z_2) * tau
             tau_hat, tau_hat_var, eps_hat = est_within(ad_Y_1[:,:t], ad_Z_1[:,:t])
 
-            Phi = calc_Phi(ad_Z_1[:,:t])
+            # Phi = calc_Phi(ad_Z_1[:,:t])
+            Phi = calc_Phi(fs_Z[:, :t]) # use static treatment design for experiment termination 0723
             sigma_sq_hat = calc_sigma_sq(eps_hat)
             prec_ad_1 = Phi * N * t / sigma_sq_hat
             if prec_ad_1 > prec_thres:
                 break
+
+            # print("ad_prec", prec_ad_1, Phi, sigma_sq_hat, Phi * t, t)
 
 
             if adaptive & (t < T_max - 1):
@@ -215,24 +243,27 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
 
                 sigma_sq_hat = calc_sigma_sq(eps_hat)
                 xi_dagger_sq_hat = calc_sigma_sq_hat_var(eps_hat)
-                scaled_xi_dagger_sq_hat = xi_dagger_sq_hat/ (fs_N * t)
+                # scaled_xi_dagger_sq_hat = xi_dagger_sq_hat/ (fs_N * t)
+                scaled_xi_dagger_sq_hat = xi_dagger_sq_hat / t * (1 / fs_N + 1 / half_ad_N) # 0723 belief for sigma_sq_hat_ad_1
                 Pt = get_Pt(sigma_sq_hat, scaled_xi_dagger_sq_hat, N, t, scaled_Phi_list, prec_thres)
-
+                # print(j , t, Pt)
 
                 ad_w_t = list(np.array(ad_treat_avg[:t]) * 2 - 1)
-                min_val = 100; opt_w = ad_w_t[-1]
-                for w in all_ws:
+                # min_val = 100; opt_w = ad_w_t[-1]
+                # for w in all_ws:
+                #
+                #     if w >= ad_w_t[-1]:
+                #         this_val = 0
+                #         for T in range(t+1, T_max):
+                #             if Pt[T-1] > 0:
+                #                 res = solve_static_opt_design(T, fix_y=ad_w_t+[w])
+                #                 val = round(scale * 1 / (-res.fun) * T) / scale
+                #                 this_val = this_val + val * Pt[T-1]
+                #         if this_val < min_val:
+                #             min_val = this_val
+                #             opt_w = w
 
-                    if w >= ad_w_t[-1]:
-                        this_val = 0
-                        for T in range(t+1, T_max):
-                            if Pt[T-1] > 0:
-                                res = solve_static_opt_design(T, fix_y=ad_w_t+[w])
-                                val = round(scale * 1 / (-res.fun) * T) / scale
-                                this_val = this_val + val * Pt[T-1]
-                        if this_val < min_val:
-                            min_val = this_val
-                            opt_w = w
+                opt_w = dp_next_w(ad_w_t, Pt, T_max, t, N0=int(half_ad_N/dp_scale_N), scale=scale)
 
                 ad_treat_avg[t] = (1 + opt_w)/2
 
@@ -240,6 +271,8 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
         Z = np.concatenate((fs_Z, ad_Z_1, ad_Z_2), axis=0)
         Y = np.concatenate((fs_Y, ad_Y_1, ad_Y_2), axis=0)
         tau_hat, tau_hat_var_all, eps_hat_all = est_within(Y[:,:T_ast], Z[:,:T_ast])
+        # print(ad_treat_avg[:T_ast])
+        # print(Pt)
 
 
         _, _, eps_hat_1 = est_within(ad_Y_1[:,:T_ast], ad_Z_1[:,:T_ast])
@@ -257,24 +290,42 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
         tau_err_std = (tau_hat - tau) / np.sqrt(tau_hat_var) * np.sqrt(N * T_ast)
 
         this_ctrl_Y = all_Ys[j]
+        bm_treat_avg = [(2 * t + 1) / (2 * T_max) for t in range(T_max)]
         Z = calc_cv_z_mtrx(N, T_max, bm_treat_avg, cv=1)
         Y = this_ctrl_Y + (1 + Z) * tau
         tau_hat_bm, _, _ = est_within(Y[:, :T_ast], Z[:, :T_ast])
+        # print(bm_treat_avg[:T_ast])
 
         opt_treat_avg = [(2 * t + 1) / (2 * T_ast) for t in range(T_ast)]
         Z_opt = calc_cv_z_mtrx(N, T_ast, opt_treat_avg, cv=1)
         Y = this_ctrl_Y[:,:T_ast] + (1 + Z_opt) * tau
         tau_hat_opt, _, _ = est_within(Y, Z_opt)
+        # print(opt_treat_avg)
 
         out['tau_adaptive'].append(tau_hat - tau)
         out['tau_bm'].append(tau_hat_bm - tau)
         out['tau_oracle'].append(tau_hat_opt - tau)
+
+        init_t = [(2 * t + 1) / (2 * T_max) for t in range(t0)]
+        if t0 == T_ast:
+            opt_treat_avg = init_t
+        else:
+            init_w = list(np.array(init_t) * 2 - 1)
+            res = solve_static_opt_design(T_ast, fix_y=init_w)
+            opt_treat_avg = list((1 + res.x) / 2)
+        # print(opt_treat_avg)
+        Z_opt = calc_cv_z_mtrx(N, T_ast, opt_treat_avg, cv=1)
+        Y = this_ctrl_Y[:, :T_ast] + (1 + Z_opt) * tau
+        tau_hat_opt_alt, _, _ = est_within(Y, Z_opt)
+        out['tau_oracle_alt'].append(tau_hat_opt_alt - tau)
+
+
         out['T_ast'].append(T_ast)
         out['tau_err_std'].append(tau_err_std)
         out['sigma_err_1_std'].append(sigma_err_1_std)
         out['sigma_err_2_std'].append(sigma_err_2_std)
 
         if print_out:
-            print(j, "adaptive", tau_hat - tau, "bm", tau_hat_bm - tau, "oracle", tau_hat_opt - tau, "T_ast", T_ast)
+            print(j, "adaptive", tau_hat - tau, "bm", tau_hat_bm - tau, "oracle", tau_hat_opt - tau, "oracle_alt", tau_hat_opt_alt - tau, "T_ast", T_ast)
 
     return out
