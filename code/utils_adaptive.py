@@ -228,40 +228,22 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
             ad_Y_2 = ad_ctrl_Y_2 + (1 + ad_Z_2) * tau
             tau_hat, tau_hat_var, eps_hat = est_within(ad_Y_1[:,:t], ad_Z_1[:,:t])
 
-            # Phi = calc_Phi(ad_Z_1[:,:t])
-            Phi = calc_Phi(fs_Z[:, :t]) # use static treatment design for experiment termination 0723
+            Phi = calc_Phi(fs_Z[:, :t])
             sigma_sq_hat = calc_sigma_sq(eps_hat)
             prec_ad_1 = Phi * N * t / sigma_sq_hat
             if prec_ad_1 > prec_thres:
                 break
-
-            # print("ad_prec", prec_ad_1, Phi, sigma_sq_hat, Phi * t, t)
-
 
             if adaptive & (t < T_max - 1):
                 tau_hat, tau_hat_var, eps_hat = est_within(fs_Y[:,:t],fs_Z[:,:t])
 
                 sigma_sq_hat = calc_sigma_sq(eps_hat)
                 xi_dagger_sq_hat = calc_sigma_sq_hat_var(eps_hat)
-                # scaled_xi_dagger_sq_hat = xi_dagger_sq_hat/ (fs_N * t)
-                scaled_xi_dagger_sq_hat = xi_dagger_sq_hat / t * (1 / fs_N + 1 / half_ad_N) # 0723 belief for sigma_sq_hat_ad_1
+                scaled_xi_dagger_sq_hat = xi_dagger_sq_hat / (fs_N * t)
+                # scaled_xi_dagger_sq_hat = xi_dagger_sq_hat / t * (1 / fs_N + 1 / half_ad_N)
                 Pt = get_Pt(sigma_sq_hat, scaled_xi_dagger_sq_hat, N, t, scaled_Phi_list, prec_thres)
-                # print(j , t, Pt)
 
                 ad_w_t = list(np.array(ad_treat_avg[:t]) * 2 - 1)
-                # min_val = 100; opt_w = ad_w_t[-1]
-                # for w in all_ws:
-                #
-                #     if w >= ad_w_t[-1]:
-                #         this_val = 0
-                #         for T in range(t+1, T_max):
-                #             if Pt[T-1] > 0:
-                #                 res = solve_static_opt_design(T, fix_y=ad_w_t+[w])
-                #                 val = round(scale * 1 / (-res.fun) * T) / scale
-                #                 this_val = this_val + val * Pt[T-1]
-                #         if this_val < min_val:
-                #             min_val = this_val
-                #             opt_w = w
 
                 opt_w = dp_next_w(ad_w_t, Pt, T_max, t, N0=int(half_ad_N/dp_scale_N), scale=scale)
 
@@ -271,8 +253,6 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
         Z = np.concatenate((fs_Z, ad_Z_1, ad_Z_2), axis=0)
         Y = np.concatenate((fs_Y, ad_Y_1, ad_Y_2), axis=0)
         tau_hat, tau_hat_var_all, eps_hat_all = est_within(Y[:,:T_ast], Z[:,:T_ast])
-        # print(ad_treat_avg[:T_ast])
-        # print(Pt)
 
 
         _, _, eps_hat_1 = est_within(ad_Y_1[:,:T_ast], ad_Z_1[:,:T_ast])
@@ -291,16 +271,18 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
 
         this_ctrl_Y = all_Ys[j]
         bm_treat_avg = [(2 * t + 1) / (2 * T_max) for t in range(T_max)]
-        Z = calc_cv_z_mtrx(N, T_max, bm_treat_avg, cv=1)
+        Z = np.concatenate((calc_cv_z_mtrx(fs_N, T_max, bm_treat_avg, cv=1),
+                            calc_cv_z_mtrx(half_ad_N, T_max, bm_treat_avg, cv=1),
+                            calc_cv_z_mtrx(half_ad_N, T_max, bm_treat_avg, cv=1)), axis=0)
         Y = this_ctrl_Y + (1 + Z) * tau
         tau_hat_bm, _, _ = est_within(Y[:, :T_ast], Z[:, :T_ast])
-        # print(bm_treat_avg[:T_ast])
 
         opt_treat_avg = [(2 * t + 1) / (2 * T_ast) for t in range(T_ast)]
-        Z_opt = calc_cv_z_mtrx(N, T_ast, opt_treat_avg, cv=1)
+        Z_opt = np.concatenate((calc_cv_z_mtrx(fs_N, T_ast, opt_treat_avg, cv=1),
+                            calc_cv_z_mtrx(half_ad_N, T_ast, opt_treat_avg, cv=1),
+                            calc_cv_z_mtrx(half_ad_N, T_ast, opt_treat_avg, cv=1)), axis=0)
         Y = this_ctrl_Y[:,:T_ast] + (1 + Z_opt) * tau
         tau_hat_opt, _, _ = est_within(Y, Z_opt)
-        # print(opt_treat_avg)
 
         out['tau_adaptive'].append(tau_hat - tau)
         out['tau_bm'].append(tau_hat_bm - tau)
@@ -313,7 +295,6 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
             init_w = list(np.array(init_t) * 2 - 1)
             res = solve_static_opt_design(T_ast, fix_y=init_w)
             opt_treat_avg = list((1 + res.x) / 2)
-        # print(opt_treat_avg)
         Z_opt = calc_cv_z_mtrx(N, T_ast, opt_treat_avg, cv=1)
         Y = this_ctrl_Y[:, :T_ast] + (1 + Z_opt) * tau
         tau_hat_opt_alt, _, _ = est_within(Y, Z_opt)
