@@ -6,22 +6,26 @@ This repository contains the code to reproduce the results presented in "optimal
 
 #### Nonadaptive experiments 
 
-- [`Example`](code/Figure-2-4.ipynb) to solve T-optimal design and D-optimal design and generate Figures 2 and EC.1
+- [`Example`](code/optimal-design-Figure-2-4-EC1.ipynb) to solve T-optimal design and D-optimal design and generate Figures 2 and EC.1
 
-- [`Example`](code/nonadaptive-flu.ipynb) to run synthetic nonadaptive experiments on empirical data and generate Figure 6
+- [`Example`](code/nonadaptive-flu-Figure-6.ipynb) to run synthetic nonadaptive experiments on empirical data and generate Figure 6
 
-- [`Example`](code/compare-various-estimation-methods-designs.ipynb) to run synthetic nonadaptive experiments on empirical data with various benchmark designs, generate Figure 3, and generate the data for Figures EC.4 and EC.5
+- [`Example`](code/compare-estimator-design-Figure-3.ipynb) to run synthetic nonadaptive experiments on empirical data with various benchmark designs, generate Figure 3, and generate the data for Figures EC.4 and EC.5
 
-- [`Example`](code/Figure-10-11.ipynb) to generate Figures EC.4 and EC.5
+- [`Example`](code/mse-bias-var-decomp-Figure-EC4-EC5.ipynb) to generate Figures EC.4 and EC.5
 
 #### Adaptive experiments
 
-- [`Example`](code/adaptive_asymptotics-lemma-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1 and generate Figure EC.13
+- [`Example`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1 and generate Figure EC.13
 
-- [`Example`](code/adaptive_asymptotics-theorem-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 and generate Figure EC.14 and EC.15, and Table EC.3
+- [`Example`](code/theorem-4.1-finite-sample-Figure-EC14-15.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 and generate Figure EC.14 and EC.15, and Table EC.3
 
-- [`Example`](code/adaptive-flu.ipynb) to run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data and generate Figures 7 and 8
+- [`Example`](code/adaptive-flu-Figure-7-8.ipynb) to run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data and generate Figures 7 and 8
 
+
+#### Illustration of dynamics of carryover effects
+
+- [`Example`](code/carryover-effect-Figure-1.ipynb) to generate two examples of dynamics of carryover effects
 
 ### Empirical data sets used in this paper are available at [`data`](data)
 
