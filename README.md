@@ -4,21 +4,23 @@ This repository contains the code to reproduce the results presented in "optimal
 
 ### Eamples to use the code are available at [`code`](code)
 
-#### Fixed-sample-size experiments 
+#### Nonadaptive experiments 
 
-- [`Example`](code/Figure-2-4.ipynb) to solve T-optimal design and D-optimal design
+- [`Example`](code/Figure-2-4.ipynb) to solve T-optimal design and D-optimal design and generate Figures 2 and EC.1
 
-- [`Example`](code/compare-various-estimation-methods-designs.ipynb) to run synthetic fixed-sample-size experiments on empirical data
+- [`Example`](code/nonadaptive-flu.ipynb) to run synthetic nonadaptive experiments on empirical data and generate Figure 6
 
-- [`Example`](Figure-10-11.ipynb) to make Figures 10 and 11
+- [`Example`](code/compare-various-estimation-methods-designs.ipynb) to run synthetic nonadaptive experiments on empirical data with various benchmark designs, generate Figure 3, and generate the data for Figures EC.4 and EC.5
 
-#### Sequential experiments
+- [`Example`](Figure-10-11.ipynb) to generate Figures EC.4 and EC.5
 
-- [`Example`](code/adaptive_asymptotics-lemma-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1
+#### Adaptive experiments
 
-- [`Example`](code/adaptive_asymptotics-theorem-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1
+- [`Example`](code/adaptive_asymptotics-lemma-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1 and generate Figure EC.13
 
-- [`Example`](code/adaptive-flu.ipynb) to run synthetic sequential experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data
+- [`Example`](code/adaptive_asymptotics-theorem-4.1.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 and generate Figure EC.14 and EC.15, and Table EC.3
+
+- [`Example`](code/adaptive-flu.ipynb) to run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data and generate Figures 7 and 8
 
 
 ### Empirical data sets used in this paper are available at [`data`](data)
@@ -36,6 +38,8 @@ This repository contains the code to reproduce the results presented in "optimal
 - ```utils_design.py```: generate treatment designs and experimental data
 
 - ```test_static.py```: run fixed-sample-size experiments and compare different treatment designs
+
+- ```utils_static_covariate.py```: helper functions for nonadaptive experiments
 
 - ```utils_adaptive.py```: Precision-Guided Adaptive Experiments (PGAE) algorithm
 
