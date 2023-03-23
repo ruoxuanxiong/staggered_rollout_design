@@ -12,7 +12,7 @@ This repository contains the code to reproduce the results presented in "optimal
 
 - [`Example`](code/compare-various-estimation-methods-designs.ipynb) to run synthetic nonadaptive experiments on empirical data with various benchmark designs, generate Figure 3, and generate the data for Figures EC.4 and EC.5
 
-- [`Example`](Figure-10-11.ipynb) to generate Figures EC.4 and EC.5
+- [`Example`](code/Figure-10-11.ipynb) to generate Figures EC.4 and EC.5
 
 #### Adaptive experiments
 
