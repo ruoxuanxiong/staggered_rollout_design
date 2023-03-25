@@ -1,6 +1,5 @@
 import os
 import pickle
-import numpy as np
 import pandas as pd
 from utils_import_data import *
 import seaborn as sns

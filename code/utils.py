@@ -24,7 +24,6 @@ def generate_bm_design(T, adj_pct=0):
     result['ba'] = [adj_pct] * int(T/2) + [1-adj_pct] * (T - int(T/2))
     result['ffba'] = [adj_pct] * int(T/2) + [0.5] * (T - int(T/2))
 
-
     out_df = pd.DataFrame(result)
 
     return out_df
@@ -37,6 +36,5 @@ def calc_cv_z_mtrx(N, T, treat_avg, cv=2):
     for t in range(T):
         for s in range(cv):
             zs[(sub_N*(s+1) - st_N_treat[t]):(sub_N*(s+1)), t] = 1
-        # zs[(N - st_N_treat[t]):N, t] = 1
     return zs
 

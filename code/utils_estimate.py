@@ -1,23 +1,7 @@
 import numpy as np
+from utils import within_transform
 
-
-def within_transform(Y, unit_effect=True, time_effect=True):
-    N, T = Y.shape
-    row_avg = np.mean(Y, axis=1).reshape((N,1))
-    col_avg = np.mean(Y,axis=0).reshape((T,1))
-    total_avg = np.mean(Y)
-    if unit_effect and time_effect:
-        Y_wi = Y - row_avg.dot(np.ones((1,T))) - np.ones((N,1)).dot(col_avg.T) + total_avg * np.ones((N,T))
-    elif (unit_effect is False) and time_effect:
-        Y_wi = Y - np.ones((N, 1)).dot(col_avg.T)
-    elif unit_effect and (time_effect is False):
-        Y_wi = Y - row_avg.dot(np.ones((1,T)))
-    else:
-        Y_wi = Y.copy()
-    return Y_wi
-
-
-def est_static(Y, Z, lag, return_std=False, return_resid=False, unit_effect=True, time_effect=True):
+def est_ols(Y, Z, lag, return_std=False, return_resid=False, unit_effect=True, time_effect=True):
     N, T = Y.shape
     Y_wi = within_transform(Y[:, lag:], unit_effect=unit_effect, time_effect=time_effect)
     all_Z_wi = list()
@@ -49,9 +33,9 @@ def est_static(Y, Z, lag, return_std=False, return_resid=False, unit_effect=True
             return list(coef[:, 0])
 
 
-def est_static_gls(Y, Z, lag, return_std=False, return_resid=False, rank=1):
+def est_gls(Y, Z, lag, return_std=False, return_resid=False, rank=1):
     N, T = Y.shape
-    coef, resid = est_static(Y, Z, lag, return_resid=True)
+    coef, resid = est_ols(Y, Z, lag, return_resid=True)
     resid_cross_cov = resid.dot(resid.T) / (T - lag + 1)
 
     U, S, Vh = np.linalg.svd(resid_cross_cov)

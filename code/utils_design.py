@@ -1,9 +1,8 @@
-import numpy as np
 import pandas as pd
 from utils_carryover import *
 import scipy
 from sklearn.cluster import KMeans
-
+from utils import calc_cv_z_mtrx
 
 def generate_bm_design(T, adj_pct=0):
     result = dict()
@@ -18,18 +17,7 @@ def generate_bm_design(T, adj_pct=0):
     return out_df
 
 
-def calc_cv_z_mtrx(N, T, treat_avg, cv=2):
-    sub_N = int(N/cv)
-    st_N_treat = [int(round(treat_avg[j] * sub_N)) for j in range(T)]
-    zs = -np.ones((N, T));
-    for t in range(T):
-        for s in range(cv):
-            zs[(sub_N*(s+1) - st_N_treat[t]):(sub_N*(s+1)), t] = 1
-        # zs[(N - st_N_treat[t]):N, t] = 1
-    return zs
-
-
-def solve_static_opt_design(T, all_lags):
+def solve_nonadaptive_opt_design(T, all_lags):
     result = dict();
     result[0] = [(2 * t + 1) / (2 * T) for t in range(T)]
     for lag in all_lags:
@@ -62,7 +50,7 @@ def find_opt_z_cluster(pre_Y, T, lag, J, G=2):
     N, pre_T = pre_Y.shape
     u, s, vh = np.linalg.svd(pre_Y, full_matrices=False)
     Uhat = u[:,:J]
-    opt_treat_df = solve_static_opt_design(T, [lag])
+    opt_treat_df = solve_nonadaptive_opt_design(T, [lag])
 
     kmeans = KMeans(n_clusters=G, random_state=0).fit(Uhat)
     labels = kmeans.labels_

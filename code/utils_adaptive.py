@@ -72,15 +72,11 @@ def get_Pt(sigma_sq, scaled_xi_dagger_sq, N, t, scaled_Phi_list, prec_thres, num
     xi_dagger_sq_sqrt = scaled_xi_dagger_sq ** 0.5
     Pt = np.zeros((len(scaled_Phi_list),))
     for j in range(num_mc):
-        # this_sigma = np.random.normal(loc=sigma_sq, scale=xi_dagger_sq_sqrt)
-        # this_sigma_sq = this_sigma ** 2
         this_sigma_sq = np.random.normal(loc=sigma_sq, scale=xi_dagger_sq_sqrt) # 0724 update
         this_prec_list = N * np.array(scaled_Phi_list) / this_sigma_sq
         # how many prec is less than the target
         min_T = np.sum(this_prec_list < prec_thres)
 
-        # if j < 5:
-        #     print("sim", j, this_prec_list, prec_thres, scaled_Phi_list, sigma_sq, this_sigma_sq)
 
         if min_T == len(scaled_Phi_list):
             min_T = len(scaled_Phi_list) - 1
@@ -94,7 +90,7 @@ def get_Pt(sigma_sq, scaled_xi_dagger_sq, N, t, scaled_Phi_list, prec_thres, num
     return Pt
 
 
-def solve_static_opt_design(T, fix_y=[]):
+def solve_nonadaptive_opt_design(T, fix_y=[]):
     fix_y_len=len(fix_y)
     if fix_y_len > 0:
         fix_y_bnds = [(fix_y[t], fix_y[t]) for t in range(fix_y_len)]
@@ -124,7 +120,7 @@ def dp_next_w(ad_w_t, Pt, T_max, t, N0=50, scale=10e8):
             this_val = 0
             for T in range(t + 1, T_max):
                 if Pt[T - 1] > 0:
-                    res = solve_static_opt_design(T, fix_y=ad_w_t + [w])
+                    res = solve_nonadaptive_opt_design(T, fix_y=ad_w_t + [w])
                     val = round(scale * 1 / (-res.fun) * T) / scale
                     this_val = this_val + val * Pt[T - 1]
             if this_val < min_val:
@@ -240,7 +236,6 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
                 sigma_sq_hat = calc_sigma_sq(eps_hat)
                 xi_dagger_sq_hat = calc_sigma_sq_hat_var(eps_hat)
                 scaled_xi_dagger_sq_hat = xi_dagger_sq_hat / (fs_N * t)
-                # scaled_xi_dagger_sq_hat = xi_dagger_sq_hat / t * (1 / fs_N + 1 / half_ad_N)
                 Pt = get_Pt(sigma_sq_hat, scaled_xi_dagger_sq_hat, N, t, scaled_Phi_list, prec_thres)
 
                 ad_w_t = list(np.array(ad_treat_avg[:t]) * 2 - 1)
@@ -293,7 +288,7 @@ def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_m
             opt_treat_avg = init_t
         else:
             init_w = list(np.array(init_t) * 2 - 1)
-            res = solve_static_opt_design(T_ast, fix_y=init_w)
+            res = solve_nonadaptive_opt_design(T_ast, fix_y=init_w)
             opt_treat_avg = list((1 + res.x) / 2)
         Z_opt = calc_cv_z_mtrx(N, T_ast, opt_treat_avg, cv=1)
         Y = this_ctrl_Y[:, :T_ast] + (1 + Z_opt) * tau
