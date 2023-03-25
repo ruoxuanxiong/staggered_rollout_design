@@ -34,7 +34,7 @@ This repository contains the code to reproduce the results presented in "optimal
 
 ### Figures are available at [`result`](result)
 
-### Code is available at [`code`](code) 
+### Helper functions are available at [`code`](code) 
 
 - ```utils_estimate.py```: OLS and GLS
 
