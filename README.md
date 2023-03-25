@@ -56,10 +56,10 @@ This repository contains the code to reproduce the results presented in "optimal
 ### Reference
 
 ```
-@article{xiong2019optimal,
+@article{xiong2023optimal,
   title={Optimal experimental design for staggered rollouts},
   author={Xiong, Ruoxuan and Athey, Susan and Bayati, Mohsen and Imbens, Guido},
-  journal={arXiv preprint arXiv:1911.03764},
-  year={2019}
+  journal={Management Science, accepted},
+  year={2023}
 }
 ```
