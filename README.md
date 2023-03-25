@@ -1,6 +1,6 @@
 # Optimal experimental design for staggered rollouts
 
-This repository contains the code to reproduce the results presented in "optimal experimental design for staggered rollouts".
+This repository contains the code to reproduce the results presented in [optimal experimental design for staggered rollouts](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3483934)
 
 ### Eamples to use the code are available at [`code`](code)
 
@@ -10,9 +10,8 @@ This repository contains the code to reproduce the results presented in "optimal
 
 - [`Example`](code/nonadaptive-flu-Figure-6.ipynb) to run synthetic nonadaptive experiments on empirical data and generate Figure 6
 
-- [`Example`](code/compare-estimator-design-Figure-3.ipynb) to run synthetic nonadaptive experiments on empirical data with various benchmark designs, generate Figure 3, and generate the data for Figures EC.4 and EC.5
+- [`Example`](code/compare-estimator-design-Figure-EC4-EC5.ipynb) to run synthetic nonadaptive experiments on empirical data with various benchmark designs and specifications, and generate the data for Figures EC.4 and EC.5
 
-- [`Example`](code/mse-bias-var-decomp-Figure-EC4-EC5.ipynb) to generate Figures EC.4 and EC.5
 
 #### Adaptive experiments
 
@@ -22,44 +21,45 @@ This repository contains the code to reproduce the results presented in "optimal
 
 - [`Example`](code/adaptive-flu-Figure-7-8.ipynb) to run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data and generate Figures 7 and 8
 
+#### Generate illustrative figures 
 
-#### Illustration of dynamics of carryover effects
+- [`Example`](code/carryover-effect-Figure-1.ipynb) to generate two examples of dynamics of carryover effects in Figure 1
 
-- [`Example`](code/carryover-effect-Figure-1.ipynb) to generate two examples of dynamics of carryover effects
+- [`Example`](code/illustrate-designs-Figure-3.ipynb) to generate various treatment designs in Figure 3
+
+### Results on nonadaptive and adaptive experiments are available at [`result`](result)
+
+### Illustrative figures are at [`figures`](figures)
 
 ### Empirical data sets used in this paper are available at [`data`](data)
 
 - Data have been preprocessed into a matrix form
 
-### Figures are available at [`result`](result)
 
-### Code is available at [`code`](code) 
 
-- ```utils_estimate.py```: within estimator, OLS, and GLS
+### Helper functions are available at [`code`](code) 
+
+- ```utils_estimate.py```: OLS and GLS
 
 - ```utils_carryover.py```: solve the optimal designs with carryover effects
 
 - ```utils_design.py```: generate treatment designs and experimental data
 
-- ```test_static.py```: run fixed-sample-size experiments and compare different treatment designs
+- ```utils_nonadaptive.py```: helper functions for nonadaptive experiments
 
-- ```utils_static_covariate.py```: helper functions for nonadaptive experiments
-
-- ```utils_adaptive.py```: Precision-Guided Adaptive Experiments (PGAE) algorithm
+- ```utils_adaptive.py```: helper functions for adaptive experiments and Precision-Guided Adaptive Experiments (PGAE) algorithm
 
 - ```utils_empirical.py```: run synthetic experiments on empirical data
 
 - ```utils_import_data.py```: import empirical data
 
-- ```utils_make_figures.py```: make figures
-
 ### Reference
 
 ```
-@article{xiong2019optimal,
+@article{xiong2023optimal,
   title={Optimal experimental design for staggered rollouts},
   author={Xiong, Ruoxuan and Athey, Susan and Bayati, Mohsen and Imbens, Guido},
-  journal={arXiv preprint arXiv:1911.03764},
-  year={2019}
+  journal={Management Science, accepted},
+  year={2023}
 }
 ```
