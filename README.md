@@ -1,6 +1,6 @@
 # Optimal experimental design for staggered rollouts
 
-This repository contains the code to reproduce the results presented in "optimal experimental design for staggered rollouts"
+This repository contains the code to reproduce the results presented in [optimal experimental design for staggered rollouts](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3483934)
 
 ### Eamples to use the code are available at [`code`](code)
 
