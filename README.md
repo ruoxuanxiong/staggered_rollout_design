@@ -1,6 +1,6 @@
 # Optimal experimental design for staggered rollouts
 
-This repository contains the code to reproduce the results presented in "optimal experimental design for staggered rollouts".
+This repository contains the code to reproduce the results presented in "optimal experimental design for staggered rollouts"
 
 ### Eamples to use the code are available at [`code`](code)
 
@@ -21,18 +21,21 @@ This repository contains the code to reproduce the results presented in "optimal
 
 - [`Example`](code/adaptive-flu-Figure-7-8.ipynb) to run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data and generate Figures 7 and 8
 
-
-#### Illustrative figures
+#### Generate illustrative figures 
 
 - [`Example`](code/carryover-effect-Figure-1.ipynb) to generate two examples of dynamics of carryover effects in Figure 1
 
 - [`Example`](code/illustrate-designs-Figure-3.ipynb) to generate various treatment designs in Figure 3
 
+### Results on nonadaptive and adaptive experiments are available at [`result`](result)
+
+### Illustrative figures are at [`figures`](figures)
+
 ### Empirical data sets used in this paper are available at [`data`](data)
 
 - Data have been preprocessed into a matrix form
 
-### Figures are available at [`result`](result)
+
 
 ### Helper functions are available at [`code`](code) 
 
