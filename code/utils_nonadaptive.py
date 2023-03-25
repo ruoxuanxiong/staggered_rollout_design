@@ -1,12 +1,45 @@
 import numpy as np
-from utils import calc_cv_z_mtrx, generate_bm_design
 from utils_estimate import est_ols, est_gls
-from utils_design import solve_nonadaptive_opt_design, add_treatment_effect, find_opt_z_cluster
+from utils_design import *
 
 
 
 def run_nonadaptive(all_taus, seed=1234, print_epochs=100, all_Ys=None, pre_Ys=None, num_mc=100, N=100, T=50, pre_T=50, adj_pct=0.01, adjust_covar=False, J=2, G=2,
                      adjust_covar_only=False, method="OLS", return_std=False, lag=None, est_lag=None, no_bm=False, unit_effect=True, time_effect=True):
+    """
+
+    Run synthetic nonadaptive experiments
+
+    Parameters
+    ----------
+    all_taus : true treatment effects
+    seed : random seed
+    print_epochs : number of epochs to print progress
+    all_Ys : list of m subblocks of observed control data
+    pre_Ys : list of m subblocks of historical control data
+    num_mc : number of terations
+    N : number of experimental units (need to specify if all_Ys is None)
+    T : number of experiment duration (need to specify if all_Ys is None)
+    pre_T : number of time periods in the historical control data (need to specify if pre_Ys is None)
+    adj_pct : fraction of adjustment units in the benchmark designs to ensure that singularity problem does not arise in the estimation of treatment effects
+    adjust_covar : whether to stratify in the design matrix
+    J : number of singular vectors used for stratification
+    G : number of strata
+    adjust_covar_only : whether to run synthetic experiment only using stratified design (adjust_covar_only=True) or not (adjust_covar_only=False)
+    method : estimation method for treatment effects (either OLS or GLS)
+    return_std : whether to return variance-covariance matrix of the estimated treatment effects
+    lag : true duration of carryover effects
+    est_lag : duration of carryover effects specified in the estimation of treatment effects
+    no_bm : whether to run synthetic experiments using benchmark designs (no_bm = False) or not (no_bm = True)
+    unit_effect : whether the outcome specification has unit fixed effect
+    time_effect : whether the outcome specification has time fixed effect
+
+    Returns
+    -------
+    A list of estimated treatment effects, a list of estimated total treatment effects (optional),
+    a list of variance-covariance matrix of the estimated treatment effects (optional), a list of variance-covariance matrix of the estimated total treatment effects (optional)
+
+    """
     np.random.seed(seed)
 
     if all_Ys is not None:

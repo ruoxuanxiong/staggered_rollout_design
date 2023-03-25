@@ -5,6 +5,20 @@ from utils_estimate import within_transform
 from utils_carryover import theta1, theta2
 
 def est_within(Y, Z):
+    """
+
+    within estimator of the instantaneous treatment effect
+
+    Parameters
+    ----------
+    Y : outcome matrix
+    Z : treatment design matrix
+
+    Returns
+    -------
+    estimated instantaneous effect, variance of estimated instantaneous effect, residuals
+
+    """
     N, T = Y.shape
     Y_wi = within_transform(Y)
     Z_wi = within_transform(Z)
@@ -19,12 +33,34 @@ def est_within(Y, Z):
 
 
 def calc_Phi(Z):
+    """
+    mean squared of within transformed Z
+
+    Parameters
+    ----------
+    Z : treatment design matrix
+
+    Returns
+    -------
+    mean squared of within transformed Z
+    """
     Z_wi = within_transform(Z)
     Phi = np.mean(Z_wi ** 2)
     return Phi
 
 
 def calc_sigma_sq(resid):
+    """
+    estimate sigma^2
+
+    Parameters
+    ----------
+    resid: residuals from the within estimator
+
+    Returns
+    -------
+    estimated sigma^2
+    """
     # resid is an NxT matrix
     N, T = resid.shape
     sigma_sq_hat = np.sum(resid ** 2) / (N * (T - 1))
@@ -32,6 +68,17 @@ def calc_sigma_sq(resid):
 
 
 def calc_xi_sq(resid):
+    """
+    estimate xi^2
+
+    Parameters
+    ----------
+    resid: residuals from the within estimator
+
+    Returns
+    -------
+    estimated xi^2
+    """
     N, T = resid.shape
     resid_sq = resid ** 2
     sigma_sq_hat = calc_sigma_sq(resid)
@@ -43,6 +90,18 @@ def calc_xi_sq(resid):
 
 
 def calc_tau_hat_var(Z, resid):
+    """
+    estimate the variance of the estimated treatment effect
+
+    Parameters
+    ----------
+    Z : treatment design matrix
+    resid : residuals from the within estimator
+
+    Returns
+    -------
+    estimated variance of the estimated treatment effect
+    """
     Phi = calc_Phi(Z)
     Phi_inv = 1/Phi
     sigma_sq_hat = calc_sigma_sq(resid)
@@ -50,6 +109,17 @@ def calc_tau_hat_var(Z, resid):
 
 
 def calc_sigma_sq_hat_var(resid):
+    """
+    estimate xi^dagger2
+
+    Parameters
+    ----------
+    resid: residuals from the within estimator
+
+    Returns
+    -------
+    estimated xi^dagger2
+    """
     N, T = resid.shape
     sigma_sq_hat = calc_sigma_sq(resid)
     xi_sq_hat = calc_xi_sq(resid)
@@ -58,6 +128,20 @@ def calc_sigma_sq_hat_var(resid):
 
 
 def calc_scaled_Phi_list(bm_treat_avg, T_max, N):
+    """
+    mean squared of within transformed Z[:,:t] multiplied by t for all t \leq T_max
+
+    Parameters
+    ----------
+    bm_treat_avg : fraction of treated units per period
+    T_max : max duration of the adaptive experiment
+    N : number of experimental units
+
+    Returns
+    -------
+    list of mean squared of within transformed Z[:,:t] multiplied by t for all t \leq T_max
+
+    """
     # scaled_Phi is Phi multipled by T
     Z = calc_cv_z_mtrx(N, T_max, bm_treat_avg, cv=1)
     scaled_Phi_list = list()
@@ -69,6 +153,23 @@ def calc_scaled_Phi_list(bm_treat_avg, T_max, N):
 
 
 def get_Pt(sigma_sq, scaled_xi_dagger_sq, N, t, scaled_Phi_list, prec_thres, num_mc=100):
+    """
+    estimate the empirical distribution of experiment termination times
+
+    Parameters
+    ----------
+    sigma_sq : estimated sigma^2
+    scaled_xi_dagger_sq : estimated xi^dagger2
+    N : number of experimental units
+    t : current time
+    scaled_Phi_list : output from the function calc_scaled_Phi_list()
+    prec_thres : precision threshold
+    num_mc : number of iterations to calculate the empirical distribution of experiment termination times
+
+    Returns
+    -------
+    empirical distribution of experiment termination times
+    """
     xi_dagger_sq_sqrt = scaled_xi_dagger_sq ** 0.5
     Pt = np.zeros((len(scaled_Phi_list),))
     for j in range(num_mc):
@@ -91,6 +192,18 @@ def get_Pt(sigma_sq, scaled_xi_dagger_sq, N, t, scaled_Phi_list, prec_thres, num
 
 
 def solve_nonadaptive_opt_design(T, fix_y=[]):
+    """
+    Solve the optimal nonadaptive design
+
+    Parameters
+    ----------
+    T : duration of the experiment
+    fix_y : constraints on the fraction of treated periods
+
+    Returns
+    -------
+    optimal nonadaptive design
+    """
     fix_y_len=len(fix_y)
     if fix_y_len > 0:
         fix_y_bnds = [(fix_y[t], fix_y[t]) for t in range(fix_y_len)]
@@ -111,6 +224,23 @@ def solve_nonadaptive_opt_design(T, fix_y=[]):
 
 
 def dp_next_w(ad_w_t, Pt, T_max, t, N0=50, scale=10e8):
+    """
+    Solve the optimal treated fraction for the next period by dynamic programming
+
+    Parameters
+    ----------
+    ad_w_t : treated fractions for the past t periods
+    Pt : estimated empirical distribution of experiment termination times (output from get_Pt())
+    T_max : max duration of the experiment
+    t : current time
+    N0 : number of possible values that the treated fraction per period can take
+    scale : adjusting scale
+
+    Returns
+    -------
+    Optimal treated fraction for the next period
+
+    """
     all_ws = [(t - N0/2) / (N0/2) for t in range(0, N0+1)]
     min_val = 100;
     opt_w = ad_w_t[-1]
@@ -131,6 +261,27 @@ def dp_next_w(ad_w_t, Pt, T_max, t, N0=50, scale=10e8):
 
 
 def test_asymptotics(N, T_max, tau, T=None, seed=1234, num_mc=1000, sigma=1):
+    """
+    Test the asymptotic distribution in Lemma 4.1
+
+    Parameters
+    ----------
+    N : number of experimental units
+    T_max : max duration of the experiment
+    tau : true treatment effect
+    T : actual experiment duration
+    seed : random seed
+    num_mc : number of iterations
+    sigma : true sigma (standard error of the noise)
+
+    Returns
+    -------
+    A dictionary of lists of results, including the estimated tau, estimation error of \hat{tau}, estimated standard deviation of \hat{tau},
+    estimated sigma^2, estimation error of \hat{sigma^2}, estimated standard deviation of \hat{sigma^2} using the right formula,
+    estimated standard deviation of \hat{sigma^2} using the wrong formula,
+    estimated xi^2
+
+    """
     np.random.seed(seed)
     bm_treat_avg = [(2 * t + 1) / (2 * T_max) for t in range(T_max)]
     Z = calc_cv_z_mtrx(N, T_max, bm_treat_avg, cv=1)
@@ -177,6 +328,35 @@ def test_asymptotics(N, T_max, tau, T=None, seed=1234, num_mc=1000, sigma=1):
 
 def run_adaptive(tau, seed=1234, print_epochs=100, fs_pct=0., all_Ys=None, num_mc=100,
                     N=100, T_max=50, t0=3, scale = 10e8, adaptive=False, adj_N=None, print_out=True, prec_thres=10, sigma=1, dp_scale_N=1):
+    """
+    Run synthetic adaptive experiments
+
+    Parameters
+    ----------
+    tau : true treatment effect
+    seed : random seed
+    print_epochs : number of epochs to print progress
+    fs_pct : fraction of nonadaptive units
+    all_Ys
+    num_mc : number of iterations
+    N : number of experimental units
+    T_max : max duration of the experiment
+    t0 : initial period to make adaptive treatment decisions and determine whether to termination the experiment
+    scale : scaling factor in dynamic programming
+    adaptive : whether to run adaptive experiment
+    adj_N : number of experimental unit to pass in calc_scaled_Phi_list()
+    print_out : whether to print out the result
+    prec_thres : precision threshold
+    sigma : true sigma (standard error of the noise)
+    dp_scale_N : adjustment factor to restrict the number of values that the treated fraction can take (can possible be used to speed up dp)
+
+    Returns
+    -------
+    A dictionary of lists of results, including the estimation error of PGAE, benchmark design, oracle design, experiment termination times,
+    estimated sigma^2 from PGAE,
+    estimated standard deviation of estimated treatment effect, etimated standard deviation of estimated sigma^2 (used to verify Theorem 4.1)
+
+    """
     np.random.seed(seed)
     all_ws = [(t - 50) / 50 for t in range(0, 100)]
     if adaptive == False:

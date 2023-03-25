@@ -1,7 +1,53 @@
 import numpy as np
-from utils import within_transform
+
+def within_transform(Y, unit_effect=True, time_effect=True):
+    """
+    Within transformation of a matrix
+
+    Parameters
+    ----------
+    Y : matrix to be transformed
+    unit_effect : whether to subtract away the mean of a unit's time series observations in the within transformation
+    time_effect :  whether to subtract away the mean of the observations of all units at a specific time period in the within transformation
+
+    Returns
+    -------
+    Within transformed matrix
+    """
+    N, T = Y.shape
+    row_avg = np.mean(Y, axis=1).reshape((N,1))
+    col_avg = np.mean(Y,axis=0).reshape((T,1))
+    total_avg = np.mean(Y)
+    if unit_effect and time_effect:
+        Y_wi = Y - row_avg.dot(np.ones((1,T))) - np.ones((N,1)).dot(col_avg.T) + total_avg * np.ones((N,T))
+    elif (unit_effect is False) and time_effect:
+        Y_wi = Y - np.ones((N, 1)).dot(col_avg.T)
+    elif unit_effect and (time_effect is False):
+        Y_wi = Y - row_avg.dot(np.ones((1,T)))
+    else:
+        Y_wi = Y.copy()
+    return Y_wi
+
 
 def est_ols(Y, Z, lag, return_std=False, return_resid=False, unit_effect=True, time_effect=True):
+    """
+    ordinary least squares estimator
+
+    Parameters
+    ----------
+    Y : observed outcome matrix
+    Z : treatment design matrix
+    lag : duration of carryover effects ell
+    return_std : whether to return variance-covariance matrix of the estimated treatment effects
+    return_resid : whether to return the residuals
+    unit_effect : whether the outcome specification has unit fixed effect
+    time_effect : whether the outcome specification has time fixed effect
+
+    Returns
+    -------
+    estimated tratment effects, variance-covariance matrix of the estimated treatment effects (optional), residuals (optional)
+
+    """
     N, T = Y.shape
     Y_wi = within_transform(Y[:, lag:], unit_effect=unit_effect, time_effect=time_effect)
     all_Z_wi = list()
@@ -33,7 +79,26 @@ def est_ols(Y, Z, lag, return_std=False, return_resid=False, unit_effect=True, t
             return list(coef[:, 0])
 
 
+
 def est_gls(Y, Z, lag, return_std=False, return_resid=False, rank=1):
+    """
+
+    generalized least squares estimator
+
+    Parameters
+    ----------
+    Y : observed outcome matrix
+    Z : treatment design matrix
+    lag : duration of carryover effects ell
+    return_std : whether to return variance-covariance matrix of the estimated treatment effects
+    return_resid : whether to return the residuals
+    rank: number of latent covariates (dimension of u_i)
+
+    Returns
+    -------
+    estimated tratment effects, variance-covariance matrix of the estimated treatment effects (optional), residuals (optional)
+
+    """
     N, T = Y.shape
     coef, resid = est_ols(Y, Z, lag, return_resid=True)
     resid_cross_cov = resid.dot(resid.T) / (T - lag + 1)
