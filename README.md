@@ -8,60 +8,60 @@ To reproduce the results, download this repo on a machine with Python, run each 
 
 ### Solve optimal design
 
-#### Run [`notebook`](code/optimal-design-Figure-2-4-EC1.ipynb) to solve
+- Run [`notebook`](code/optimal-design-Figure-2-4-EC1.ipynb) to solve
 
-- fraction of treated units per period in the T-optimal design ([`Figure 2`](figures/carryover-t-optimal.pdf))
-- fraction of treated units per period for the D-optimal design ([`Figure EC.1`](figures/carryover-d-optimal.pdf))
-- optimal fraction of treated units per period to maximize the precision of each of the estimated instantaneous and lagged effects ([`Figure 4`](figures/carryover-t-optimal-s-curve.pdf))
+  - fraction of treated units per period in the T-optimal design ([`Figure 2`](figures/carryover-t-optimal.pdf))
+  - fraction of treated units per period for the D-optimal design ([`Figure EC.1`](figures/carryover-d-optimal.pdf))
+  - optimal fraction of treated units per period to maximize the precision of each of the estimated instantaneous and lagged effects ([`Figure 4`](figures/carryover-t-optimal-s-curve.pdf))
 
 
 ### Run nonadaptive experiments
 
-#### Run [`notebook`](code/nonadaptive-flu-Figure-6.ipynb) to
+- Run [`notebook`](code/nonadaptive-flu-Figure-6.ipynb) to
 
-- run synthetic nonadaptive experiments on the flu data for 2,000 iterations 
-- compare various treatment designs, including benchmark designs, linear staggered design (optimal when $\ell = 0$), nonlinear staggered design (optimal for general $\ell$), stratified nonlinear staggered design) 
-- generate [`Figure 6`](TBD)
+  - run synthetic nonadaptive experiments on the flu data for 2,000 iterations 
+  - compare various treatment designs, including benchmark designs, linear staggered design (optimal when $\ell = 0$), nonlinear staggered design (optimal for general $\ell$), stratified nonlinear staggered design) 
+  - generate [`Figure 6`](result/flu/flu_T_7_varying_N_lag_2_agg.pdf)
 
-#### Run [`notebook`](code/compare-estimator-design-Figure-EC4-EC5.ipynb) 
+- Run [`notebook`](code/compare-estimator-design-Figure-EC4-EC5.ipynb) 
 
-- run synthetic nonadaptive experiments on the flu data for 1,000 iterations 
-- compare various outcome specifications, including without fixed effects, with unit fixed effect only, with time fixed effect only, with two-way fixed effects, and with two-way fixed effects and latent covariates
-- compare various treatment designs
-- generate [`Figure EC.4`](flu/flu_N_25_T_7_various_methods-full.pdf) and [`Figure EC.5`](result/flu/flu_N_25_T_7_bias-variance.pdf) 
+  - run synthetic nonadaptive experiments on the flu data for 1,000 iterations 
+  - compare various outcome specifications, including without fixed effects, with unit fixed effect only, with time fixed effect only, with two-way fixed effects, and with two-way fixed effects and latent covariates
+  - compare various treatment designs
+  - generate [`Figure EC.4`](flu/flu_N_25_T_7_various_methods-full.pdf) and [`Figure EC.5`](result/flu/flu_N_25_T_7_bias-variance.pdf) 
 
 ### Run adaptive experiments
 
-#### Run [`notebook`](code/adaptive-flu-Figure-7-8.ipynb) to 
+- Run [`notebook`](code/adaptive-flu-Figure-7-8.ipynb) to 
 
-- run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on the flu data for 10,000 iterations
-- generate [`notebook`](result/flu-adaptive/flu_termination_time.pdf) and [`Figure 8`](result/flu-adaptive/flu_adaptive_comparison.pdf)
+  - run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on the flu data for 10,000 iterations
+  - generate [`Figure 7`](result/flu-adaptive/flu_termination_time.pdf) and [`Figure 8`](result/flu-adaptive/flu_adaptive_comparison.pdf)
 
-#### Run [`notebook`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb) to 
+- Run [`notebook`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb) to 
 
-- verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1
-- generate subplots in Figure EC.13
+  - verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1
+  - generate [`subplots in Figure EC.13`](result/simulation/)
 
-#### Run [`notebook`](code/theorem-4.1-finite-sample-Figure-EC14-15.ipynb) to 
+- Run [`notebook`](code/theorem-4.1-finite-sample-Figure-EC14-15.ipynb) to 
 
-- verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 
-- generate Figure EC.14 and EC.15, and Table EC.3
+  - verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 
+  - generate [`subplots in Figure EC.14 and EC.15, and Table EC.3`](result/simulation/)
 
 
-#### Generate illustrative figures 
+### Generate illustrative figures 
 
-- [`Example`](code/carryover-effect-Figure-1.ipynb) to generate two examples of dynamics of carryover effects in Figure 1
+- Run [`notebook`](code/carryover-effect-Figure-1.ipynb) to 
 
-- [`Example`](code/illustrate-designs-Figure-3.ipynb) to generate various treatment designs in Figure 3
+  - generate two examples of dynamics of carryover effects in Figure 1 ([`Example 1`](figures/cumulative_effect_new_infection.pdf) and [`Example 2`](figures/wearout_effect_app.pdf))
 
-### Results on nonadaptive and adaptive experiments are available at [`result`](result)
+- Run [`notebook`](code/illustrate-designs-Figure-3.ipynb) to 
+  
+  - generate various treatment designs in Figure 3 (various designs are stored [`here`](figures/))
 
-### Illustrative figures are at [`figures`](figures)
 
 ### Empirical data sets used in this paper are available at [`data`](data)
 
 - Data have been preprocessed into a matrix form
-
 
 ### Helper functions are available at [`code`](code) 
 
