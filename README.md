@@ -2,9 +2,9 @@
 
 This repository contains the Python code to reproduce the results presented in [optimal experimental design for staggered rollouts](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3483934)
 
-### Quick start
+### Quickstart
 
-To reproduce the results, download this repo on a machine with Python, run each of Jupyter Notebooks in the [`code`](code) without modification, and then the results are saved in [`result`](result). You do not need to set any pathnames, and everything is relative. To run the notebooks, only standard libraries (Numpy, pandas, SciPy, Matplotlib, and seaborn) are needed.
+To reproduce the results, download this repo on a machine with Python, run each of Jupyter Notebooks in the [`code`](code) without modification, and then the results are saved in [`result`](result). All the notebooks can be run standalone. To run the notebooks, you do not need to set any pathnames; everything is relative. Only standard libraries (Numpy, pandas, SciPy, Matplotlib, and seaborn) are required in the notebooks.
 
 ### Solve optimal design
 
