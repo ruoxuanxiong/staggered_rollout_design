@@ -1,19 +1,36 @@
 # Optimal experimental design for staggered rollouts
 
-This repository contains the code to reproduce the results presented in [optimal experimental design for staggered rollouts](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3483934)
+This repository contains the Python code to reproduce the results presented in [optimal experimental design for staggered rollouts](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3483934)
 
-### Eamples to use the code are available at [`code`](code)
+### Quick start
 
-#### Nonadaptive experiments 
+To reproduce the results, download this repo on a machine with Python, run each of Jupyter Notebooks in the [`code`](code) without modification, and then the results are saved in [`result`](result)
 
-- [`Example`](code/optimal-design-Figure-2-4-EC1.ipynb) to solve T-optimal design and D-optimal design and generate Figures 2 and EC.1
+### Solve optimal design
 
-- [`Example`](code/nonadaptive-flu-Figure-6.ipynb) to run synthetic nonadaptive experiments on empirical data and generate Figure 6
+#### Run [`notebook`](code/optimal-design-Figure-2-4-EC1.ipynb) to solve
 
-- [`Example`](code/compare-estimator-design-Figure-EC4-EC5.ipynb) to run synthetic nonadaptive experiments on empirical data with various benchmark designs and specifications, and generate the data for Figures EC.4 and EC.5
+- fraction of treated units per period in the T-optimal design ([`Figure 2`](figures/carryover-t-optimal.pdf))
+- fraction of treated units per period for the D-optimal design ([`Figure EC.1`](figures/carryover-d-optimal.pdf))
+- optimal fraction of treated units per period to maximize the precision of each of the estimated instantaneous and lagged effects ([`Figure 4`](figures/carryover-t-optimal-s-curve.pdf))
 
 
-#### Adaptive experiments
+### Run nonadaptive experiments
+
+#### Run [`notebook`](code/nonadaptive-flu-Figure-6.ipynb)
+
+- synthetic nonadaptive experiments are run on the flu data for 2,000 iterations 
+- compare various treatment designs, including benchmark designs, linear staggered design (optimal when $\ell = 0$), nonlinear staggered design (optimal for general $\ell$), stratified nonlinear staggered design) 
+- generate [`Figure 6`](TBD)
+
+#### Run [`notebook`](code/compare-estimator-design-Figure-EC4-EC5.ipynb) 
+
+- synthetic nonadaptive experiments are run on the flu data for 1,000 iterations 
+- compare various outcome specifications, including without fixed effects, with unit fixed effect only, with time fixed effect only, with two-way fixed effects, and with two-way fixed effects and latent covariates
+- compare various treatment designs
+- generate [`Figure EC.4`](flu/flu_N_25_T_7_various_methods-full.pdf) and [`Figure EC.5`](result/flu/flu_N_25_T_7_bias-variance.pdf) 
+
+### Run adaptive experiments
 
 - [`Example`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1 and generate Figure EC.13
 
@@ -49,7 +66,7 @@ This repository contains the code to reproduce the results presented in [optimal
 
 - ```utils_adaptive.py```: helper functions for adaptive experiments and Precision-Guided Adaptive Experiments (PGAE) algorithm
 
-- ```utils_empirical.py```: run synthetic experiments on empirical data
+- ```utils_empirical.py```: helper functions to pre-process empirical data that are used to run synthetic experiments
 
 - ```utils_import_data.py```: import empirical data
 
