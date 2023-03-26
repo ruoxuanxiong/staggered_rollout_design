@@ -17,7 +17,7 @@ To reproduce the results, download this repo on a machine with Python, run each 
 
 ### Run nonadaptive experiments
 
-- Run [`notebook`](code/nonadaptive-flu-Figure-6.ipynb) to
+- Run [`notebook`](code/nonadaptive-flu-Figure-6.ipynb)
 
   - run synthetic nonadaptive experiments on the flu data for 2,000 iterations 
   - compare various treatment designs, including benchmark designs, linear staggered design (optimal when $\ell = 0$), nonlinear staggered design (optimal for general $\ell$), stratified nonlinear staggered design) 
@@ -32,17 +32,17 @@ To reproduce the results, download this repo on a machine with Python, run each 
 
 ### Run adaptive experiments
 
-- Run [`notebook`](code/adaptive-flu-Figure-7-8.ipynb) to 
+- Run [`notebook`](code/adaptive-flu-Figure-7-8.ipynb)
 
   - run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on the flu data for 10,000 iterations
   - generate [`Figure 7`](result/flu-adaptive/flu_termination_time.pdf) and [`Figure 8`](result/flu-adaptive/flu_adaptive_comparison.pdf)
 
-- Run [`notebook`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb) to 
+- Run [`notebook`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb)
 
   - verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1
   - generate [`subplots in Figure EC.13`](result/simulation/)
 
-- Run [`notebook`](code/theorem-4.1-finite-sample-Figure-EC14-15.ipynb) to 
+- Run [`notebook`](code/theorem-4.1-finite-sample-Figure-EC14-15.ipynb)
 
   - verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 
   - generate [`subplots in Figure EC.14 and EC.15, and Table EC.3`](result/simulation/)
@@ -50,11 +50,11 @@ To reproduce the results, download this repo on a machine with Python, run each 
 
 ### Generate illustrative figures 
 
-- Run [`notebook`](code/carryover-effect-Figure-1.ipynb) to 
+- Run [`notebook`](code/carryover-effect-Figure-1.ipynb)
 
   - generate two examples of dynamics of carryover effects in Figure 1 ([`Example 1`](figures/cumulative_effect_new_infection.pdf) and [`Example 2`](figures/wearout_effect_app.pdf))
 
-- Run [`notebook`](code/illustrate-designs-Figure-3.ipynb) to 
+- Run [`notebook`](code/illustrate-designs-Figure-3.ipynb)
   
   - generate various treatment designs in Figure 3 (various designs are stored [`here`](figures/))
 
