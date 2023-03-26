@@ -4,7 +4,7 @@ This repository contains the Python code to reproduce the results presented in [
 
 ### Quick start
 
-To reproduce the results, download this repo on a machine with Python, run each of Jupyter Notebooks in the [`code`](code) without modification, and then the results are saved in [`result`](result). To run the notebooks, only standard libraries (Numpy, pandas, SciPy, Matplotlib, and seaborn) are needed.
+To reproduce the results, download this repo on a machine with Python, run each of Jupyter Notebooks in the [`code`](code) without modification, and then the results are saved in [`result`](result). You do not need to set any pathnames, and everything is relative. To run the notebooks, only standard libraries (Numpy, pandas, SciPy, Matplotlib, and seaborn) are needed.
 
 ### Solve optimal design
 
@@ -65,7 +65,7 @@ To reproduce the results, download this repo on a machine with Python, run each 
 
 ### Helper functions are collected in [`code`](code) 
 
-The following scripts collect all the helper functions used to solve treatment designs and run synthetic experiments. The scripts are not executable, but rather, the helper functions are imported in the notebooks to solve treatment designs and run synthetic experiments.
+The following scripts collect all the helper functions used to solve treatment designs and run synthetic experiments. The helper functions are called in the notebooks listed above. You do not need to separately run any of the scripts to replicate the results in the paper. 
 
 - ```utils_estimate.py```: within transformation, OLS and GLS
 
