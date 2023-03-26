@@ -17,26 +17,36 @@ To reproduce the results, download this repo on a machine with Python, run each 
 
 ### Run nonadaptive experiments
 
-#### Run [`notebook`](code/nonadaptive-flu-Figure-6.ipynb)
+#### Run [`notebook`](code/nonadaptive-flu-Figure-6.ipynb) to
 
-- synthetic nonadaptive experiments are run on the flu data for 2,000 iterations 
+- run synthetic nonadaptive experiments on the flu data for 2,000 iterations 
 - compare various treatment designs, including benchmark designs, linear staggered design (optimal when $\ell = 0$), nonlinear staggered design (optimal for general $\ell$), stratified nonlinear staggered design) 
 - generate [`Figure 6`](TBD)
 
 #### Run [`notebook`](code/compare-estimator-design-Figure-EC4-EC5.ipynb) 
 
-- synthetic nonadaptive experiments are run on the flu data for 1,000 iterations 
+- run synthetic nonadaptive experiments on the flu data for 1,000 iterations 
 - compare various outcome specifications, including without fixed effects, with unit fixed effect only, with time fixed effect only, with two-way fixed effects, and with two-way fixed effects and latent covariates
 - compare various treatment designs
 - generate [`Figure EC.4`](flu/flu_N_25_T_7_various_methods-full.pdf) and [`Figure EC.5`](result/flu/flu_N_25_T_7_bias-variance.pdf) 
 
 ### Run adaptive experiments
 
-- [`Example`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1 and generate Figure EC.13
+#### Run [`notebook`](code/adaptive-flu-Figure-7-8.ipynb) to 
 
-- [`Example`](code/theorem-4.1-finite-sample-Figure-EC14-15.ipynb) to verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 and generate Figure EC.14 and EC.15, and Table EC.3
+- run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on the flu data for 10,000 iterations
+- generate [`notebook`](result/flu-adaptive/flu_termination_time.pdf) and [`Figure 8`](result/flu-adaptive/flu_adaptive_comparison.pdf)
 
-- [`Example`](code/adaptive-flu-Figure-7-8.ipynb) to run synthetic adaptive experiments using the Precision-Guided Adaptive Experiments (PGAE) algorithm on empirical data and generate Figures 7 and 8
+#### Run [`notebook`](code/lemma-4.1-finite-sample-Figure-EC13.ipynb) to 
+
+- verify the finite sample properties of the asymptotic distributions derived in Lemma 4.1
+- generate subplots in Figure EC.13
+
+#### Run [`notebook`](code/theorem-4.1-finite-sample-Figure-EC14-15.ipynb) to 
+
+- verify the finite sample properties of the asymptotic distributions derived in Theorem 4.1 
+- generate Figure EC.14 and EC.15, and Table EC.3
+
 
 #### Generate illustrative figures 
 
@@ -51,7 +61,6 @@ To reproduce the results, download this repo on a machine with Python, run each 
 ### Empirical data sets used in this paper are available at [`data`](data)
 
 - Data have been preprocessed into a matrix form
-
 
 
 ### Helper functions are available at [`code`](code) 
