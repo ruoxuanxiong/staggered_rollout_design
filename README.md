@@ -28,7 +28,7 @@ To reproduce the results, download this repo on a machine with Python, run each 
   - run synthetic nonadaptive experiments on the flu data for 1,000 iterations 
   - compare various outcome specifications, including without fixed effects, with unit fixed effect only, with time fixed effect only, with two-way fixed effects, and with two-way fixed effects and latent covariates
   - compare various treatment designs
-  - generate [`Figure EC.4`](flu/flu_N_25_T_7_various_methods-full.pdf) and [`Figure EC.5`](result/flu/flu_N_25_T_7_bias-variance.pdf) 
+  - generate [`Figure EC.4`](result/flu/flu_N_25_T_7_various_methods-full.pdf) and [`Figure EC.5`](result/flu/flu_N_25_T_7_bias-variance.pdf) 
 
 ### Run adaptive experiments
 
